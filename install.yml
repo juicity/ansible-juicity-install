@@ -29,6 +29,7 @@
       args:
         src: /tmp/juicity-server.service
         dest: /etc/systemd/system/juicity-server.service
+        remote_src: yes
 
     - name: create config directory
       action: file

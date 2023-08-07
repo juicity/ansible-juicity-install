@@ -1,0 +1,10 @@
+{
+  "log_level": "info",
+  "listen": ":{{ juicity_port }}",
+  "congestion_control": "bbr",
+  "certificate": "/etc/juicity/fullchain.cer",
+  "private_key": "/etc/juicity/private.key",
+  "users": {
+    "{{ juicity_username }}": "{{ juicity_password }}"
+  }
+}

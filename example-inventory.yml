@@ -29,7 +29,28 @@ all:
         # set letsencrypt email for this particular host, overriding the default, see letsencrypt_email inside all:vars below
         letsencrypt_email: username@example.com
 
+    us01:
+      ansible_host: us01.example.com
+      vars:
+        # set juicity username
+        juicity_username: juicity
+
+    us02:
+      ansible_host: us02.example.com
+      vars:
+        # set juicity password
+        juicity_password: juicity
+
+    us03:
+      ansible_host: us03.example.com
+      vars:
+        # set juicity listen port
+        juicity_port: 4443
+
 all:
   vars:
     ansible_user: ubuntu
     letsencrypt_email: username1@example.com
+    juicity_username: username
+    juicity_password: password
+    juicity_port: 443

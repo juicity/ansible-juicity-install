@@ -3,16 +3,13 @@
   become: true
 
   tasks:
-    - name: update server.json
-      action: copy
-      args:
-        src: server.json
+    - name: update juicity server.json using jinja2
+      template:
+        src: server.json.j2
         dest: /etc/juicity/server.json
-      register: update_config
 
-    - name: restart systemd service
+    - name: restart juicity systemd service
       action: systemd
-      when: update_config.changed
       args:
         name: juicity-server
         state: restarted
