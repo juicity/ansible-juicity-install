@@ -4,50 +4,45 @@ all:
     hk01:
       # ssh hostname
       ansible_host: hk01.example.com
-      vars:
-        # letsencrypt DNS hostname
-        letsencrypt_hostname: hk01.example.com
+      # letsencrypt DNS hostname
+      letsencrypt_hostname: hk01.example.com
 
     hk02:
       ansible_host: hk01.example.com
       # set ssh username for this particular host, overriding the default, see ansible_user inside all:vars below
       ansible_user: username
-      vars:
-        letsencrypt_hostname: hk02.example.com
+      letsencrypt_hostname: hk02.example.com
 
     sg01:
       ansible_host: sg01.example.com
       # set ssh port instead of using default 22
       ansible_port: 2222
-      vars:
-        letsencrypt_hostname: sg01.example.com
+      letsencrypt_hostname: sg01.example.com
 
     sg02:
       ansible_host: sg01.example.com
-      vars:
-        letsencrypt_hostname: sg01.example.com
-        # set letsencrypt email for this particular host, overriding the default, see letsencrypt_email inside all:vars below
-        letsencrypt_email: username@example.com
+      letsencrypt_hostname: sg01.example.com
+      # set letsencrypt email for this particular host, overriding the default, see letsencrypt_email inside all:vars below
+      letsencrypt_email: username@example.com
 
     us01:
       ansible_host: us01.example.com
-      vars:
-        # set juicity username
-        juicity_username: juicity
+      letsencrypt_hostname: us01.example.com
+      # set juicity username
+      juicity_username: juicity
 
     us02:
       ansible_host: us02.example.com
-      vars:
-        # set juicity password
-        juicity_password: juicity
+      letsencrypt_hostname: us02.example.com
+      # set juicity password
+      juicity_password: juicity
 
     us03:
       ansible_host: us03.example.com
-      vars:
-        # set juicity listen port
-        juicity_port: 4443
+      letsencrypt_hostname: us03.example.com
+      # set juicity listen port
+      juicity_port: 4443
 
-all:
   vars:
     ansible_user: ubuntu
     letsencrypt_email: username1@example.com

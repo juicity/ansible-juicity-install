@@ -9,12 +9,16 @@
         url: https://github.com/juicity/juicity/releases/latest/download/juicity-linux-x86_64.zip
         dest: /tmp/juicity.zip
 
-    - name: unzip juicity.zip
-      action: unarchive
+    - name: install unzip with package manager
+      action: package
       args:
-        src: /tmp/juicity.zip
-        dest: /tmp
-        remote_src: yes
+        name: unzip
+        state: present
+
+    - name: unzip juicity.zip
+      action: command
+      args:
+        cmd: unzip -od /tmp /tmp/juicity.zip
 
     - name: copy binary
       action: copy
@@ -85,5 +89,6 @@
     - name: setup crontab for certificate auto renewal
       action: cron
       args:
-        month: 1
+        name: juicity-certificate-renewal
         job: lego -a -m {{ letsencrypt_email }} -d {{ letsencrypt_hostname }} --http renew
+        month: 1
