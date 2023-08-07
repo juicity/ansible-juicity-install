@@ -1,0 +1,18 @@
+- name: config
+  hosts: all
+  become: true
+
+  tasks:
+    - name: update server.json
+      action: copy
+      args:
+        src: server.json
+        dest: /etc/juicity/server.json
+      register: update_config
+
+    - name: restart systemd service
+      action: systemd
+      when: update_config.changed
+      args:
+        name: juicity-server
+        state: restarted

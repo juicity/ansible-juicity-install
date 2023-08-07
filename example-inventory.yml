@@ -1,0 +1,35 @@
+all:
+  hosts:
+    # basic example, all fields are required for each host
+    hk01:
+      # ssh hostname
+      ansible_host: hk01.example.com
+      vars:
+        # letsencrypt DNS hostname
+        letsencrypt_hostname: hk01.example.com
+
+    hk02:
+      ansible_host: hk01.example.com
+      # set ssh username for this particular host, overriding the default, see ansible_user inside all:vars below
+      ansible_user: username
+      vars:
+        letsencrypt_hostname: hk02.example.com
+
+    sg01:
+      ansible_host: sg01.example.com
+      # set ssh port instead of using default 22
+      ansible_port: 2222
+      vars:
+        letsencrypt_hostname: sg01.example.com
+
+    sg02:
+      ansible_host: sg01.example.com
+      vars:
+        letsencrypt_hostname: sg01.example.com
+        # set letsencrypt email for this particular host, overriding the default, see letsencrypt_email inside all:vars below
+        letsencrypt_email: username@example.com
+
+all:
+  vars:
+    ansible_user: ubuntu
+    letsencrypt_email: username1@example.com
