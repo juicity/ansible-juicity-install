@@ -16,24 +16,26 @@
         state: present
 
     - name: unzip juicity.zip
-      action: command
+      action: unarchive
       args:
-        cmd: unzip -od /tmp /tmp/juicity.zip
+        remote_src: yes
+        src: /tmp/juicity.zip
+        dest: /tmp
 
     - name: copy binary
       action: copy
       args:
         mode: "755"
+        remote_src: yes
         src: /tmp/juicity-server
         dest: /usr/bin/juicity-server
-        remote_src: yes
 
     - name: copy systemd service file
       action: copy
       args:
+        remote_src: yes
         src: /tmp/juicity-server.service
         dest: /etc/systemd/system/juicity-server.service
-        remote_src: yes
 
     - name: create config directory
       action: file
@@ -69,26 +71,32 @@
     - name: obtain certificates with lego
       action: command
       args:
-        cmd: lego -a -m {{ letsencrypt_email }} -d {{ letsencrypt_hostname }} --http run
+        cmd: lego -a -m {{ letsencrypt_email }} -d {{ letsencrypt_hostname }} --path /etc/juicity --http run
       when: fullchain.stat.exists is false or private.stat.exists is false
 
-    - name: copy certificate - crt
-      action: copy
+    - name: link certificate - crt
+      action: file
       args:
-        remote_src: yes
-        src: .lego/certificates/{{ letsencrypt_hostname }}.crt
+        state: link
+        src: "/etc/juicity/certificates/{{ letsencrypt_hostname }}.crt"
         dest: /etc/juicity/fullchain.cer
 
-    - name: copy certificate - key
-      action: copy
+    - name: link certificate - key
+      action: file
       args:
-        remote_src: yes
-        src: .lego/certificates/{{ letsencrypt_hostname }}.key
+        state: link
+        src: "/etc/juicity/certificates/{{ letsencrypt_hostname }}.key"
         dest: /etc/juicity/private.key
+
+    - name: install cron for certificate auto renewal
+      action: package
+      args:
+        name: cron
+        state: present
 
     - name: setup crontab for certificate auto renewal
       action: cron
       args:
         name: juicity-certificate-renewal
-        job: lego -a -m {{ letsencrypt_email }} -d {{ letsencrypt_hostname }} --http renew
+        job: lego -a -m {{ letsencrypt_email }} -d {{ letsencrypt_hostname }} --path /etc/juicity --http renew
         month: 1
