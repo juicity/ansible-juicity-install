@@ -1,0 +1,6 @@
+kvm:
+  hosts:
+    localhost:
+      juicity_domain: YOUR_DOMAIN
+      ansible_user: root
+      ansible_connection: local
