@@ -444,6 +444,9 @@ class NekoRayConfig:
     def to_json(self, sp: Path):
         sp.write_text(json.dumps(self.__dict__, indent=4, ensure_ascii=True))
 
+    def to_sharelink(self, sp: Path):
+        sp.write_text(self.sharelink)
+
     @property
     def showcase(self) -> str:
         return json.dumps(self.__dict__, indent=4, ensure_ascii=True)
@@ -503,6 +506,7 @@ class Template:
             user, server_config, server_addr, server_port, server_ip
         )
         nekoray.to_json(project.client_nekoray_config)
+        nekoray.to_sharelink(project.sharelink)
 
     def print_nekoray(self):
         if not self.project.client_nekoray_config.exists():
