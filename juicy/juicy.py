@@ -111,6 +111,10 @@ class Project:
         # 返回已绑定的空闲端口
         return self._server_port
 
+    @server_port.setter
+    def server_port(self, port: int):
+        self._server_port = port
+
     @property
     def alias(self):
         return f"alias {self._alias}='{self._remote_command}'"
@@ -555,6 +559,26 @@ class Scaffold:
         sys.exit()
 
     @staticmethod
+    def _validate_port(port: int | None) -> NoReturn | int | None:
+        # No `-p` parameter specified
+        if port is None:
+            return
+
+        # Avoid conflicts with known services as much as possible
+        if port < 49152:
+            logging.error(f"指定的端口应当大于 49151 - scope=[49152, 65535]")
+            sys.exit()
+
+        # UDP port already in use
+        if Project.is_port_in_used(port, proto="udp"):
+            logging.error(f"UDP 端口已被占用 - port={port}")
+            sys.exit()
+
+        # Available port
+        logging.info(f"端口绑定成功 - port={port}")
+        return port
+
+    @staticmethod
     def _recv_stream(script: str, pipe: Literal["stdout", "stderr"] = "stdout") -> str:
         p = subprocess.Popen(
             script.split(),
@@ -571,6 +595,8 @@ class Scaffold:
 
     @staticmethod
     def install(params: argparse.Namespace):
+        port = Scaffold._validate_port(params.port)
+
         (domain, server_ip) = Scaffold._validate_domain(params.domain)
         logging.info(f"域名解析成功 - domain={domain}")
 
@@ -585,10 +611,13 @@ class Scaffold:
 
         # 初始化 workstation
         project = Project()
+        user = User.gen()
+
         # 设置脚本别名
         project.set_alias()
 
-        user = User.gen()
+        # 绑定传入的端口，或随机选用未被占用的 UDP 端口
+        project.server_port = port or project.server_port
         server_port = project.server_port
 
         # 初始化系统服务配置
@@ -678,6 +707,7 @@ def run():
 
     install_parser = subparsers.add_parser("install", help="Automatically install and run")
     install_parser.add_argument("-d", "--domain", type=str, help="传参指定域名，否则需要在运行脚本后以交互的形式输入")
+    install_parser.add_argument("-p", "--port", type=int, help="指定服务监听端口，否则随机选择未被使用的端口")
 
     remove_parser = subparsers.add_parser("remove", help="Uninstall services and associated caches")
     remove_parser.add_argument("-d", "--domain", type=str, help="传参指定域名，否则需要在运行脚本后以交互的形式输入")
