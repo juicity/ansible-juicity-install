@@ -1,0 +1,11 @@
+- name: Update juicity on remote hosts
+  hosts: all
+  gather_facts: true
+  become: true
+
+  vars:
+    base_url: "https://nightly.link/juicity/juicity/actions/runs"
+    systemd_service: juicity-server
+
+  roles:
+    - role: ./roles/juicity.update/

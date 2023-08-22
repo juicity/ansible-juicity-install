@@ -1,0 +1,45 @@
+---
+- name: Install prerequisites
+  block:
+    - name: Install unzip if unzip is absent
+      package:
+        name: unzip
+        state: present
+
+- name: Extract run_id from input url
+  set_fact:
+    run_id: "{{ action_url | split('/') | last }}"
+
+- name: Download binary from GitHub Actions
+  get_url:
+    url: "{{ base_url }}/{{ run_id }}/juicity-linux-x86_64.zip"
+    dest: /tmp/juicity.zip
+
+- name: unzip juicity.zip
+  unarchive:
+    remote_src: yes
+    src: /tmp/juicity.zip
+    dest: /tmp
+
+- name: Copy binary
+  copy:
+    remote_src: yes
+    src: /tmp/juicity-server
+    dest: /usr/bin/juicity-server
+    mode: a+x
+
+- name: Restart systemd service
+  systemd:
+    name: "{{ systemd_service }}"
+    state: restarted
+
+- name: Verify version
+  block:
+    - name: Verify version
+      shell: |
+        juicity-server --version
+      register: version
+    - name: Print output
+      debug:
+        msg: "{{ version.stdout }}"
+

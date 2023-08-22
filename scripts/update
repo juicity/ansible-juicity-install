@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -ex
+
+action_url=$1
+
+ansible-playbook -i inventory.yml \
+  --extra-vars "action_url=$action_url" \
+  update.yml
+
