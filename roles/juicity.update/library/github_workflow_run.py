@@ -22,7 +22,7 @@ def main():
         build_type=dict(type="str", required=True),
     )
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
-    result = dict(changed=False, run_id=0)
+    result = dict(changed=True, run_id=0)
 
     m = Module(module.params["owner"], module.params["repo"])
     latest_run_id = m.get_latest_workflow_run_id(module.params["build_type"])
