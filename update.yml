@@ -5,8 +5,6 @@
 
   vars:
     systemd_service: juicity-server
-    type: pr-build # options: [main-build, pr-build]
-    latest: true
 
   roles:
     - role: ./roles/juicity.update/
