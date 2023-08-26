@@ -6,14 +6,36 @@
         name: unzip
         state: present
 
-- name: Extract run_id from input url
+- name: Fetch latest run_id from the given build_type
+  block:
+    - name: Fetch latest run_id from the given build_type
+      github_workflow_run:
+        owner: juicity
+        repo: juicity
+        build_type: "{{ build_type }}"
+      delegate_to: localhost
+      register: result
+      become: false
+    - name: Extract run_id from outputs
+      set_fact:
+        run_id: "{{ result.run_id }}"
+  when:
+    - build_type == "pr-build"
+    - latest
+    - action_url is not defined
+
+- name: Extract run_id from action_url
   set_fact:
     run_id: "{{ action_url | split('/') | last }}"
+  when:
+    - action_url is defined
+    - build_type == "custom"
 
 - name: Download binary from GitHub Actions
   get_url:
     url: "{{ base_url }}/{{ run_id }}/juicity-linux-x86_64.zip"
     dest: /tmp/juicity.zip
+  register: download
 
 - name: unzip juicity.zip
   unarchive:
@@ -32,6 +54,7 @@
   systemd:
     name: "{{ systemd_service }}"
     state: restarted
+  when: download.changed
 
 - name: Verify version
   block:
@@ -42,4 +65,5 @@
     - name: Print output
       debug:
         msg: "{{ version.stdout }}"
+  when: download.changed
 

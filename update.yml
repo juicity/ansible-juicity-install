@@ -4,8 +4,9 @@
   become: true
 
   vars:
-    base_url: "https://nightly.link/juicity/juicity/actions/runs"
     systemd_service: juicity-server
+    type: pr-build # options: [main-build, pr-build]
+    latest: true
 
   roles:
     - role: ./roles/juicity.update/
