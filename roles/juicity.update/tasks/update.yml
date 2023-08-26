@@ -20,7 +20,7 @@
       set_fact:
         run_id: "{{ result.run_id }}"
   when:
-    - build_type == "pr-build"
+    - build_type is defined
     - latest
     - action_url is not defined
 
