@@ -21,7 +21,7 @@
         run_id: "{{ result.run_id }}"
   when:
     - build_type is defined
-    - latest
+    - latest is defined
     - action_url is not defined
 
 - name: Extract run_id from action_url
