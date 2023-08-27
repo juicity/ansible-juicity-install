@@ -1,10 +1,19 @@
 #!/bin/bash
 
-set -ex
+set -e
 
-action_url=$1
+BIN="venv/bin/ansible-playbook"
 
-ansible-playbook -i inventory.yml \
-  --extra-vars "action_url=$action_url" \
-  update.yml
-
+if [ -z "$1" ] && [[ "$1" != *"http://"* ]]; then
+  [[ ! -z "$1" ]] && build_type=$1 || build_type=pr-build
+  $BIN -i inventory.yml \
+    --extra-vars "build_type=$build_type" \
+    --extra-vars "latest=true" \
+    update.yml
+else
+  action_url=$1
+  $BIN -i inventory.yml \
+    --extra-vars "action_url=$action_url" \
+    --extra-vars "build_type=custom" \
+    update.yml
+fi

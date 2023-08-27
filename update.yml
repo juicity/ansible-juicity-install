@@ -4,7 +4,6 @@
   become: true
 
   vars:
-    base_url: "https://nightly.link/juicity/juicity/actions/runs"
     systemd_service: juicity-server
 
   roles:
