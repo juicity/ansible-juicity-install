@@ -1,0 +1,10 @@
+#!/bin/bash
+
+set -e
+
+BIN="venv/bin/ansible-playbook"
+args=$@
+
+$BIN -i inventory.yml \
+  $args \
+  restart.yml
