@@ -60,3 +60,16 @@ GitHub Action: https://github.com/juicity/juicity/actions
 # e.g
 ./scripts/update https://github.com/juicity/juicity/actions/runs/5927920609
 ```
+
+### Juicity Server Restart
+
+```bash
+# restart all remote hosts
+./scripts/restart
+
+# exclude particular host(s), separate with comma
+./scripts/restart --limit '!host1,!host2'
+
+# include particular host(s), separate with comma
+./scripts/restart --limit 'host1,host2'
+```
