@@ -9,10 +9,10 @@ Juicity Installation with Ansible
 ## Bootstrap
 
 > **Note**
-> Running the `install` script will install all the dependencies required for the module
+> Running the `bootstrap` script will install all the dependencies required for the module
 
 ```bash
-./install
+./bootstrap
 ```
 
 ## Usage
@@ -43,11 +43,13 @@ GitHub Action: https://github.com/juicity/juicity/actions
 > ONLY works for GitHub Action builds, not available for stable releases at the moment.
 
 ```bash
-# install binary from the build_type: {latest pr-build,main-build,daily-build}
+# install binary from the build_type: {latest pr-build,build,daily-build}
 # use default build_type: pr-build
 ./scripts/update
+# or
+# ./scripts/update pr-build
 
-# build_type: main
+# build_type: main-build
 ./scripts/update build
 
 # build_type: daily-build
