@@ -39,9 +39,6 @@ ansible-playbook config.yml
 
 GitHub Action: https://github.com/juicity/juicity/actions
 
-> **Note**
-> ONLY works for GitHub Action builds, not available for stable releases at the moment.
-
 ```bash
 # install binary from the build_type: {latest pr-build,build,daily-build}
 # use default build_type: pr-build
