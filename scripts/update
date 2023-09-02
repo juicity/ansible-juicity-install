@@ -4,11 +4,14 @@ set -e
 
 BIN="venv/bin/ansible-playbook"
 
-if [ -z "$1" ] && [[ "$1" != *"http://"* ]]; then
+if [[ "$1" != *"http://"* ]]; then
+  latest=yes
   [[ ! -z "$1" ]] && build_type=$1 || build_type=pr-build
+  [[ ! -z "$2" ]] && release_tag=$2 || release_tag=na && latest=no
   $BIN -i inventory.yml \
     --extra-vars "build_type=$build_type" \
-    --extra-vars "latest=true" \
+    --extra-vars "latest=$latest" \
+    --extra-vars "release_tag=$release_tag" \
     update.yml
 else
   action_url=$1

@@ -1,17 +1,10 @@
 ---
-- name: Install prerequisites
-  block:
-    - name: Install unzip if unzip is absent
-      package:
-        name: unzip
-        state: present
-
 - name: Fetch latest run_id from the given build_type
   block:
     - name: Fetch latest run_id from the given build_type
       github_workflow_run:
-        owner: juicity
-        repo: juicity
+        owner: "{{ owner }}"
+        repo: "{{ app }}"
         build_type: "{{ build_type }}"
       delegate_to: localhost
       register: result
@@ -21,7 +14,7 @@
         run_id: "{{ result.run_id }}"
   when:
     - build_type is defined
-    - latest is defined
+    - latest
     - action_url is not defined
 
 - name: Extract run_id from action_url
@@ -31,39 +24,62 @@
     - action_url is defined
     - build_type == "custom"
 
+- name: Remove artifacts from /tmp/{{ app }}
+  block:
+    - name: Find files and subdirectories
+      ansible.builtin.find:
+        paths: "/tmp/{{ app }}"
+        recurse: yes
+        file_type: any
+      register: found_items
+
+    - name: Remove artifacts
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      with_items: "{{ found_items.files }}"
+      when: found_items.matched > 0
+
 - name: Download binary from GitHub Actions
   get_url:
-    url: "{{ base_url }}/{{ run_id }}/juicity-linux-x86_64.zip"
-    dest: /tmp/juicity.zip
+    url: "{{ base_url }}/{{ run_id }}/{{ app }}-linux-x86_64.zip"
+    dest: "/tmp/{{ app }}/{{ app }}-linux-x86_64.zip"
   register: download
+  when:
+    - build_type != "release"
 
-- name: unzip juicity.zip
+- name: Download binary from GitHub Releases
+  get_url:
+    url: "{{ release_base_url }}/{{ release_tag }}/{{ app }}-linux-x86_64.zip"
+    dest: "/tmp/{{ app }}/{{ app }}-linux-x86_64.zip"
+  register: download
+  when:
+    - build_type == "release"
+    - release_tag != "na"
+
+- name: Unzip binary
   unarchive:
     remote_src: yes
-    src: /tmp/juicity.zip
-    dest: /tmp
+    src: "/tmp/{{ app }}/{{ app }}-linux-x86_64.zip"
+    dest: "/tmp/{{ app }}"
 
 - name: Copy binary
   copy:
     remote_src: yes
-    src: /tmp/juicity-server
-    dest: /usr/bin/juicity-server
+    src: "/tmp/{{ app }}/{{ binary }}"
+    dest: "/usr/bin/{{ binary }}"
     mode: a+x
 
 - name: Restart systemd service
   systemd:
     name: "{{ systemd_service }}"
     state: restarted
-  when: download.changed
 
 - name: Verify version
   block:
     - name: Verify version
-      shell: |
-        juicity-server --version
+      shell: "{{ binary }} --version"
       register: version
     - name: Print output
       debug:
         msg: "{{ version.stdout }}"
-  when: download.changed
-
