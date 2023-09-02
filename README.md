@@ -56,12 +56,12 @@ GitHub Action: https://github.com/juicity/juicity/actions
 # install binary from a given github action url
 ./scripts/update <github_action_url>
 # e.g
-./scripts/update https://github.com/juicity/juicity/actions/runs/5927920609
+# ./scripts/update https://github.com/juicity/juicity/actions/runs/5927920609
 
 # build_type: release
 ./scripts/update release <release_tag>
 # e.g
-./scripts/update release v0.3.0
+# ./scripts/update release v0.3.0
 ```
 
 ### Juicity Server Restart
