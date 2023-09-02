@@ -1,3 +1,10 @@
 ---
+owner: juicity
+app: juicity
 base_url: "https://nightly.link/juicity/juicity/actions/runs"
+release_base_url: https://github.com/juicity/juicity/releases/download
 systemd_service: juicity-server
+build_type: pr-build
+latest: no
+release_tag: na
+binary: juicity-server

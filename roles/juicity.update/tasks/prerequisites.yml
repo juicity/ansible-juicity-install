@@ -1,0 +1,22 @@
+---
+- name: Create a dir to store artifacts if not exist
+  block:
+    - name: Check if the directory /tmp/{{ app }} exists
+      ansible.builtin.stat:
+        path: "/tmp/{{ app }}"
+      register: dir_check
+
+    - name: Create the directory /tmp/{{ app }} if not exist
+      ansible.builtin.file:
+        path: "/tmp/{{ app }}"
+        owner: "{{ ansible_user }}"
+        state: directory
+      when: not dir_check.stat.exists
+
+- name: Install prerequisites
+  block:
+    - name: Install unzip if unzip is absent
+      package:
+        name: unzip
+        state: present
+
