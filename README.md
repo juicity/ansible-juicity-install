@@ -15,6 +15,15 @@ Juicity Installation with Ansible
 ./bootstrap
 ```
 
+Activate virtualenv
+
+```bash
+# zsh|bash
+source ./venv/bin/activate
+# fish
+. ./venv/bin/activate.fish
+```
+
 ## Usage
 
 Prepare an inventory file, then customize it based on your needs.
