@@ -52,6 +52,9 @@ GitHub Action: https://github.com/juicity/juicity/actions
 # build_type: daily-build
 ./scripts/update daily-build
 
+# build_type: pr-build (latest workflow run)
+./scripts/update pr-build
+
 # build_type: custom
 # install binary from a given github action url
 ./scripts/update <github_action_url>
