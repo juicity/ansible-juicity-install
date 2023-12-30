@@ -20,7 +20,7 @@ Juicity Installation with Ansible
 Prepare an inventory file, then customize it based on your needs.
 
 ```bash
-cp example-inventory.yml inventory.yml
+cp inventory.example.yml inventory.yml
 ```
 
 ### Juicity Server Installation
